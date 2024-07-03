@@ -127,6 +127,6 @@ resource "azurerm_virtual_machine" "my_terraform_vm" {
   }
 
   provisioner "remote-exec" {
-    script = "scripts/install.sh"
+    script = "install.sh"
   }
 }
