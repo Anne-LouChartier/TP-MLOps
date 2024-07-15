@@ -122,7 +122,7 @@ resource "azurerm_virtual_machine" "my_terraform_vm" {
     }
   }
 
-  provisioner "remote-exec" {
+provisioner "remote-exec" {
     connection {
       type        = "ssh"
       user        = var.admin_username
@@ -132,8 +132,16 @@ resource "azurerm_virtual_machine" "my_terraform_vm" {
 
     inline = [
       "sudo apt-get update -y",
-      "sudo apt-get install -y curl",
-      "curl https://jsonplaceholder.typicode.com/posts"
+      "sudo apt-get install -y docker.io git",
+      "sudo systemctl enable docker",
+      "sudo systemctl start docker",
+      "sudo apt-get install -y nginx",
+      "sudo systemctl enable nginx",
+      "sudo systemctl start nginx",
+      "mkdir -p /home/${var.admin_username}/json-server",
+      "echo '{ \"posts\": [{ \"id\": 1, \"title\": \"Hello World\" }] }' > /home/${var.admin_username}/json-server/db.json",
+      "sudo docker run -d -p 3000:3000 -v /home/${var.admin_username}/json-server/db.json:/data/db.json clue/json-server",
+      "sudo systemctl restart nginx"
     ]
   }
 }
