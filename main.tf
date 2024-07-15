@@ -105,8 +105,8 @@ resource "azurerm_virtual_machine" "my_terraform_vm" {
   storage_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
+    sku       = "19_04-daily-gen2"
+    version   = "19.04.201911270" 
   }
 
   os_profile {
@@ -118,11 +118,11 @@ resource "azurerm_virtual_machine" "my_terraform_vm" {
     disable_password_authentication = true
     ssh_keys {
       path     = "/home/${var.admin_username}/.ssh/authorized_keys"
-      key_data = azurerm_ssh_public_key.ssh_key.public_key
+      key_data = file("${var.ssh_private_key_path}.pub")
     }
   }
 
-provisioner "remote-exec" {
+  provisioner "remote-exec" {
     connection {
       type        = "ssh"
       user        = var.admin_username
