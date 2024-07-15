@@ -112,21 +112,28 @@ resource "azurerm_virtual_machine" "my_terraform_vm" {
   os_profile {
     computer_name  = "myVM"
     admin_username = var.admin_username
-    admin_password = var.admin_password
   }
 
   os_profile_linux_config {
-    disable_password_authentication = false
-  }
-
-  connection {
-    type        = "ssh"
-    user        = var.admin_username
-    private_key = file("~/.ssh/id_rsa")
-    host        = azurerm_public_ip.my_terraform_public_ip.ip_address
+    disable_password_authentication = true
+    ssh_keys {
+      path     = "/home/${var.admin_username}/.ssh/authorized_keys"
+      key_data = azurerm_ssh_public_key.ssh_key.public_key
+    }
   }
 
   provisioner "remote-exec" {
-    script = "install.sh"
+    connection {
+      type        = "ssh"
+      user        = var.admin_username
+      private_key = file(var.ssh_private_key_path)
+      host        = azurerm_public_ip.my_terraform_public_ip.ip_address
+    }
+
+    inline = [
+      "sudo apt-get update -y",
+      "sudo apt-get install -y curl",
+      "curl https://jsonplaceholder.typicode.com/posts"
+    ]
   }
 }
