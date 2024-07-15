@@ -1,13 +1,13 @@
 variable "resource_group_location" {
     type = string
-    default = 'eastus'
-    description = 'Location of the resource group.'
+    default = "eastus"
+    description = "Location of the resource group."
 }
 
 variable "resource_group_name_prefix" {
     type = string
-    default = 'rg'
-    description = 'Prefix of the ressource group name'
+    default = "rg"
+    description = "Prefix of the ressource group name"
 }
 
 variable "admin_username" {
@@ -25,7 +25,7 @@ variable "admin_password" {
 variable "vm_size" {
   description = "Size of the VM"
   type        = string
-  default     = "Standard_B1s"
+  default     = "Standard_D2s_v3"
 }
 
 variable "ssh_private_key_path" {
